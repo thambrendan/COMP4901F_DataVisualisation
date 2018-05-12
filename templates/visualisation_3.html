@@ -29,6 +29,10 @@ div.tooltip {
 
 </style>
 <body>
+	<table>
+		<th>
+	</table>
+
 	<div id = "Visualisation_Table"> 
 		<div draggable = "true" id = "barcode_1" alt="barcode_1" class = "barcodeContainer"> barcode_1 </div>
 		<div id = "barcode_2" alt="barcode_2" class = "barcodeContainer"> barcode_2 </div>
@@ -106,7 +110,7 @@ div.tooltip {
 
 	var color = d3.scale.linear()
 	      			// .interpolate(d3.interpolateHcl)
-      				.range([d3.rgb("#ec407a"), d3.rgb('#5ac7f8')]);
+      				.range([d3.rgb("#ec407a"), d3.rgb('#FFCCCB')]);
 					// .range(["red", "green"]);
 	color.domain([colorMin, colorMax]);
 
@@ -122,6 +126,8 @@ div.tooltip {
 	    .attr("class", "tooltip")				
 	    .style("opacity", 0)
 	    .style("font", "10px times");
+
+	// var $BarcodeContainerSelector = querySelector("barcodeContainer");
 
 	d3.csv("/static/data/track_data_final.csv", function(data){
 		// console.log(error);
