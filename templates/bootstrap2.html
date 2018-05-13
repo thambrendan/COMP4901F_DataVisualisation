@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bootstrap Cheat Sheet</title>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+        crossorigin="anonymous">
+    <style>
+
+        #myInput {
+        background-image: url('/css/searchicon.png');
+        background-position: 10px 12px;
+        background-repeat: no-repeat;
+        width: 100%;
+        font-size: 16px;
+        padding: 12px 20px 12px 40px;
+        border: 1px solid #ddd;
+        margin-bottom: 12px;
+        }
+
+        #myUL {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+        }
+
+        #myUL li a {
+        border: 1px solid #ddd;
+        margin-top: -1px; /* Prevent double borders */
+        /* background-color: #f6f6f6; */
+        padding: 12px;
+        text-decoration: none;
+        font-size: 18px;
+        color: black;
+        display: block
+        }
+
+        .unclicked {
+        background-color: #f6f6f6;
+        }
+
+        .clicked{
+        background-color: aqua;
+        }
+
+        div.tooltip {	
+        position: absolute;			
+        text-align: left;			
+        width: 100px;					
+        height: 45px;					
+        padding: 2px;				
+        font: 12px sans-serif;		
+        background: lightsteelblue;	
+        border: 0px;		
+        border-radius: 8px;			
+        pointer-events: none;			
+        }
+
+        .barcodeContainer {
+        float: left;
+        width: 100px;
+        height: 35px;
+        margin: 10px;
+        padding: 10px;
+        border: 1px solid black;
+        }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+    crossorigin="anonymous"></script>
+    <script src="http://d3js.org/d3.v3.min.js"></script>
+	<!-- // <script src="d3.js"></script> -->
+	<script src="http://d3js.org/topojson.v0.min.js"></script>
+</head>
+
+<body>
+    <div class="col-md-3">
+        <h2>Drivers</h2>
+
+        <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for driver.." title="Type in a name">
+        
+        <ul id="myUL">
+          <li><a href="#">Adele</a></li>
+          <li><a href="#">Agnes</a></li>
+        
+          <li><a href="#">Billy</a></li>
+          <li><a href="#">Bob</a></li>
+        
+          <li><a href="#">Calvin</a></li>
+          <li><a href="#">Christina</a></li>
+          <li><a href="#">Cindy</a></li>
+        </ul>
+    </div>
+
+        <div id = "Visualisation_Table" class="col-md-6"> 
+            <div draggable = "true" id = "barcode_1" alt="barcode_1" class = "barcodeContainer"> barcode_1 </div>
+            <div id = "barcode_2" alt="barcode_2" class = "barcodeContainer"> barcode_2 </div>
+            <div id = "barcode_3" alt="barcode_3" class = "barcodeContainer"> barcode_3 </div>
+            <div id = "barcode_4" alt="barcode_4" class = "barcodeContainer"> barcode_4 </div>
+            <div id = "barcode_5" alt="barcode_5" class = "barcodeContainer"> barcode_5 </div>
+            <div id = "barcode_6" alt="barcode_6" class = "barcodeContainer"> barcode_6 </div>
+            <div id = "barcode_7" alt="barcode_7" class = "barcodeContainer"> barcode_7 </div>
+            <div id = "barcode_8" alt="barcode_8" class = "barcodeContainer"> barcode_8 </div>
+            <div id = "barcode_9" alt="barcode_9" class = "barcodeContainer"> barcode_9 </div>
+            <div id = "barcode_10" alt="barcode_10" class = "barcodeContainer"> barcode_10 </div>
+            <div id = "barcode_11" alt="barcode_11" class = "barcodeContainer"> barcode_11 </div>
+            <div id = "barcode_12" alt="barcode_12" class = "barcodeContainer"> barcode_12 </div>
+            
+            <script>
+
+                    function exist(array, data){
+                        for( i = 0; i < array.length; i++){
+                            if(data == array[i]){
+                                return true;
+                            }
+                        }
+                        return false;
+                    }
+                
+                    // Get a subset of the data based on the group
+                    function getFilteredData_Constructor(data, ConstructorName) {
+                        return data.filter(function(d) { return d.ConstructorName === ConstructorName; });
+                    }
+                
+                    function getFilteredData_Year(data, StartYear, EndYear) {
+                        return data.filter(function(d) { 
+                            var status = false;
+                            _tempYearArray = d.Years.split(",");
+                            for(i = 1; i < _tempYearArray.length; i++){
+                                if((parseInt(_tempYearArray[i]) >= parseInt(StartYear)) && (parseInt(_tempYearArray[i]) <= parseInt(EndYear)))
+                                    status = true;
+                                    break; 
+                                }
+                            return status;
+                            });
+                    }
+                
+                    const SVG_WIDTH = 500;
+                    const SVG_HEIGHT = 500;
+                    const BAR_GAP = SVG_WIDTH/22;
+                    const BAR_WIDTH = BAR_GAP * 0.6;
+                    var colorMin = 1;
+                
+                    var colorMax = 8;
+                
+                    var lengthMin = 0;
+                
+                    var lengthMax = 1000;
+                
+                    var margin ={top: 20, right: 20, bottom: 20, left: 20},
+                        width = SVG_WIDTH - margin.left - margin.right,
+                        height = SVG_HEIGHT - margin.top - margin.bottom;
+                
+                    var length = d3.scale.linear()
+                                    .range([0, width]);
+                
+                    var invertLength = d3.scale.linear()
+                                    .range([lengthMin, lengthMax]).domain([0, width]);
+                
+                    // console.log(invertLength(4));
+                
+                    // var color = d3.scale.linear()
+                    //       			// .interpolate(d3.interpolateHcl)
+                 //      				.range([d3.rgb("#99000D"), d3.rgb('#fff5f0')]);
+                    // 				// .range(["red", "green"]);
+                    // color.domain([colorMin, colorMax]);
+                
+                    function color(value){
+                        switch(value){
+                            case 1: return "#99000D"; break;
+                            case 2: return "#CB181D"; break;
+                            case 3: return "#EF3B2C"; break;
+                            case 4: return "#FB6A4A"; break;
+                            case 5: return "#FC9272"; break;
+                            case 6: return "#FCBBA1"; break;
+                            case 7: return "#FEE0D2"; break;
+                            case 8: return "#fff5f0"; break;
+                        }
+                    }
+                
+                    length.domain([lengthMin, lengthMax]);
+                
+                    var svg = d3.select("body")
+                                .append("svg")
+                                .attr("width", width + margin.left + margin.right)
+                                .attr("height", height + margin.top + margin.bottom);
+                
+                    // Define the div for the tooltip
+                    var div = d3.select("body").append("div")	
+                        .attr("class", "tooltip")				
+                        .style("opacity", 0)
+                        .style("font", "10px times");
+                
+                    // var $BarcodeContainerSelector = querySelector("barcodeContainer");
+                
+                    d3.csv("/static/data/track_data_final.csv", function(data){
+                        // console.log(error);
+                        // console.log(data);
+                        CircuitNameArray = [];
+                        YearsArray = [];
+                        // Turn data to usable format
+                        data.forEach(function(d){
+                            // console.log(parseInt(d.Pattern_1.split("_")[0]));
+                            // console.log((d.Pattern_1.split("_"))[1].replace("%",""));
+                            if(exist(CircuitNameArray, d.Circuit)){
+                                
+                            }else{
+                                CircuitNameArray.push(d.Circuit);
+                            }
+                        });
+                
+                        function enterBars(data){
+                            var i1 = -1;
+                            var i2 = -1;
+                            for(var i = 0; i < data.length; i++){
+                                g = svg.append("g").attr("id", String(i));
+                                var d = data[i];
+                                var xMove = 0.0;
+                                var d = data[i];
+                                for (var property in data[i]) {
+                                    if (data[i].hasOwnProperty(property)) {
+                                        if(String(property).includes("Pattern_")){
+                                            // console.log(String(data[i][property]));
+                
+                                            g.append("rect")
+                                            .attr("transform",function(){
+                                                return "translate(" + [xMove, i*BAR_GAP] + ")";
+                                            })
+                                            .attr("width", function(){
+                                                if(d[property] === ""){
+                                                    return 0;
+                                                }
+                                                xMove += length(parseFloat((d[property].split("_"))[1].replace("%",""))*10.0);
+                                                return length(parseFloat((d[property].split("_"))[1].replace("%",""))*10.0);})
+                                            .attr("height", BAR_WIDTH)
+                                            .attr("fill", function(){
+                                                if(d[property] === ""){
+                                                    return color(1);
+                                                }
+                                                return color(parseInt(d[property].split("_")[0]));})
+                                            .on("mouseover", handleMouseOver)
+                                            .on("mouseout", handleMouseOut)
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                
+                
+                          enterBars(data);
+                
+                    // Create Event Handlers for mouse
+                    function handleMouseOver(d, i) {  // Add interactivity
+                        div.transition()		
+                            .duration(200)		
+                            .style("opacity", .9);		
+                        div	.style("width", 60)
+                            .style("height", 70).html("Length: " + String(invertLength(this.width.baseVal.value)))
+                            .style("left", (d3.event.pageX + 10) + "px")		
+                            .style("top", (d3.event.pageY - 28) + "px");	
+                        
+                          // Use D3 to select element, change color and size
+                            d3.select(this).attr(
+                              {height: BAR_GAP*0.8}
+                              );
+                            console.log(this);
+                        }
+                
+                    function handleMouseOut(d, i){
+                
+                        div.transition()		
+                                .duration(500)		
+                                .style("opacity", 0);	
+                          // Use D3 to select element, change color back to normal
+                          d3.select(this).attr(
+                              {height: BAR_GAP*0.6}
+                              );
+                        }
+                    });
+                
+            </script>
+        </div>
+
+    <script>
+        function myFunction() {
+            var input, filter, ul, li, a, i;
+            input = document.getElementById("myInput");
+            filter = input.value.toUpperCase();
+            ul = document.getElementById("myUL");
+            li = ul.getElementsByTagName("li");
+            for (i = 0; i < li.length; i++) {
+                a = li[i].getElementsByTagName("a")[0];
+                if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+                    li[i].style.display = "";
+                } else {
+                    li[i].style.display = "none";
+        
+                }
+            }
+        }
+        
+        $('li').addClass('unclicked');
+
+        $('li').on('click', function() {
+            if ($(this).hasClass('unclicked')){
+                $(this).removeClass('unclicked');
+                $(this).addClass('clicked');
+
+                // do something when selected
+
+            }else if ($(this).has('clicked')){
+                $(this).removeClass('clicked');
+                $(this).addClass('unclicked');
+
+                // do something when deselected
+            }
+        });
+
+    </script>
+
+
+</body>
+
+</html>
