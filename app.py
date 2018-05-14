@@ -13,13 +13,13 @@ def visualisation_1():
 def visualisation_3():
     return render_template('visualisation_3.html')
 
-@app.route("/main")
-def testing_bootstrap():
-    return render_template('bootstrap2.html')
+# @app.route("/main")
+# def testing_bootstrap():
+#     return render_template('bootstrap2.html')
 
-@app.route("/testing")
-def testing_bootstrap():
-    return render_template('bootstrap3.html')
+# @app.route("/testing")
+# def testing_bootstrap():
+#     return render_template('bootstrap3.html')
  
 if __name__ == "__main__":
 	app.static_folder = 'static'
