@@ -127,7 +127,7 @@
       <input type="text" id="CircuitListContainer" onkeyup="CircuitSearchFunction()" placeholder="Search for names.." title="Type in a name">
 
       <ul id="CircuitList">
-        <li id = "Circuit1"><a href="#" >20</a></li>
+        <li id = "Circuit1"><a href="#">20</a></li>
         <li id = "Circuit2"><a href="#">54</a></li>
 
         <li id = "Circuit3"><a href="#">1</a></li>
@@ -163,6 +163,42 @@
 
 
 <script>
+	function DriverSearchFunction() {
+	      var input, filter, ul, li, a, i;
+	      input = document.getElementById("DriverListContainer");
+	      filter = input.value.toUpperCase();
+	      ul = document.getElementById("DriverList");
+	      li = ul.getElementsByTagName("li");
+	      for (i = 0; i < li.length; i++) {
+	          a = li[i].getElementsByTagName("a")[0];
+	          if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+	              li[i].style.display = "";
+	          } else {
+	              li[i].style.display = "none";
+
+	          }
+	      }
+	  }
+
+	  function CircuitSearchFunction() {
+	      var input, filter, ul, li, a, i;
+	      input = document.getElementById("CircuitListContainer");
+	      filter = input.value.toUpperCase();
+	      ul = document.getElementById("CircuitList");
+	      li = ul.getElementsByTagName("li");
+	      for (i = 0; i < li.length; i++) {
+	          a = li[i].getElementsByTagName("a")[0];
+	          if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+	              li[i].style.display = "";
+	          } else {
+	              li[i].style.display = "none";
+
+	          }
+	      }
+	  }
+
+
+
 
 	const SVG_WIDTH = 500;
 	const SVG_HEIGHT = 500;
@@ -411,39 +447,40 @@
 			  	NumberOfCircuitsSelected = 0;
 
 
-			  function DriverSearchFunction() {
-			      var input, filter, ul, li, a, i;
-			      input = document.getElementById("DriverListContainer");
-			      filter = input.value.toUpperCase();
-			      ul = document.getElementById("DriverList");
-			      li = ul.getElementsByTagName("li");
-			      for (i = 0; i < li.length; i++) {
-			          a = li[i].getElementsByTagName("a")[0];
-			          if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
-			              li[i].style.display = "";
-			          } else {
-			              li[i].style.display = "none";
+			  // function DriverSearchFunction() {
+			  //     var input, filter, ul, li, a, i;
+			  //     input = document.getElementById("DriverListContainer");
+			  //     filter = input.value.toUpperCase();
+			  //     ul = document.getElementById("DriverList");
+			  //     li = ul.getElementsByTagName("li");
+			  //     for (i = 0; i < li.length; i++) {
+			  //         a = li[i].getElementsByTagName("a")[0];
+			  //         if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+			  //             li[i].style.display = "";
+			  //         } else {
+			  //             li[i].style.display = "none";
 
-			          }
-			      }
-			  }
+			  //         }
+			  //     }
+			  // }
 
-			  function CircuitSearchFunction() {
-			      var input, filter, ul, li, a, i;
-			      input = document.getElementById("CircuitListContainer");
-			      filter = input.value.toUpperCase();
-			      ul = document.getElementById("CircuitList");
-			      li = ul.getElementsByTagName("li");
-			      for (i = 0; i < li.length; i++) {
-			          a = li[i].getElementsByTagName("a")[0];
-			          if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
-			              li[i].style.display = "";
-			          } else {
-			              li[i].style.display = "none";
+			  // function CircuitSearchFunction() {
+			  //     var input, filter, ul, li, a, i;
+			  //     input = document.getElementById("CircuitListContainer");
+			  //     filter = input.value.toUpperCase();
+			  //     ul = document.getElementById("CircuitList");
+			  //     li = ul.getElementsByTagName("li");
+			  //     for (i = 0; i < li.length; i++) {
+			  //         a = li[i].getElementsByTagName("a")[0];
+			  //         if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+			  //             li[i].style.display = "";
+			  //         } else {
+			  //             li[i].style.display = "none";
 
-			          }
-			      }
-			  }
+			  //         }
+			  //     }
+			  // }
+
 
 			  $('li').addClass('unclicked');
 
