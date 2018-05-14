@@ -3,7 +3,7 @@ app = Flask(__name__)
  
 @app.route("/")
 def overview_home():
-    return render_template('visualisation_2.html')
+    return render_template('temp_visualisation.html')
 
 @app.route("/visualisation_1")
 def visualisation_1():
