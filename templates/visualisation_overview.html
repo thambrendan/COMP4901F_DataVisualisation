@@ -20,7 +20,7 @@
 
 
     #CircuitListContainer {
-      background-image: url('/css/searchicon.png');
+      /*background-image: url('/css/searchicon.png');*/
       background-position: 10px 12px;
       background-repeat: no-repeat;
       width: 100%;
@@ -97,15 +97,15 @@
       <input type="text" id="DriverListContainer" onkeyup="DriverSearchFunction()" placeholder="Search for names.." title="Type in a name">
 
       <ul id="DriverList">
-        <li  id = "Driver1"><a href="#">Adele</a></li>
-        <li  id = "Driver2"><a href="#">Agnes</a></li>
+        <li  id = "Driver1"><a href="#">321</a></li>
+        <li  id = "Driver2"><a href="#">1</a></li>
 
-        <li  id = "Driver3"><a href="#">Billy</a></li>
-        <li  id = "Driver4"><a href="#">Bob</a></li>
+        <li  id = "Driver3"><a href="#">32</a></li>
+        <li  id = "Driver4"><a href="#">54</a></li>
 
-        <li  id = "Driver5"><a href="#">Calvin</a></li>
-        <li  id = "Driver6"><a href="#">Christina</a></li>
-        <li  id = "Driver7"><a href="#">Cindy</a></li>
+        <li  id = "Driver5"><a href="#">47</a></li>
+        <li  id = "Driver6"><a href="#">3</a></li>
+        <li  id = "Driver7"><a href="#">80</a></li>
       </ul>
 
     </div>
@@ -127,15 +127,15 @@
       <input type="text" id="CircuitListContainer" onkeyup="CircuitSearchFunction()" placeholder="Search for names.." title="Type in a name">
 
       <ul id="CircuitList">
-        <li id = "Circuit1"><a href="#" >Adele</a></li>
-        <li id = "Circuit2"><a href="#">Agnes</a></li>
+        <li id = "Circuit1"><a href="#">20</a></li>
+        <li id = "Circuit2"><a href="#">54</a></li>
 
-        <li id = "Circuit3"><a href="#">Billy</a></li>
-        <li id = "CIrcuit4"><a href="#">Bob</a></li>
+        <li id = "Circuit3"><a href="#">1</a></li>
+        <li id = "CIrcuit4"><a href="#">16</a></li>
 
-        <li id = "Circuit5"><a href="#">Calvin</a></li>
-        <li id = "Circuit6"><a href="#">Christina</a></li>
-        <li id = "Circuit7"><a href="#">Cindy</a></li>
+        <li id = "Circuit5"><a href="#">18</a></li>
+        <li id = "Circuit6"><a href="#">17</a></li>
+        <li id = "Circuit7"><a href="#">70</a></li>
       </ul>
 
 
@@ -163,119 +163,50 @@
 
 
 <script>
-  NumberOfDriversSelected = 0;
-  NumberOfCircuitsSelected = 0;
-
-
   function DriverSearchFunction() {
-      var input, filter, ul, li, a, i;
-      input = document.getElementById("DriverListContainer");
-      filter = input.value.toUpperCase();
-      ul = document.getElementById("DriverList");
-      li = ul.getElementsByTagName("li");
-      for (i = 0; i < li.length; i++) {
-          a = li[i].getElementsByTagName("a")[0];
-          if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
-              li[i].style.display = "";
-          } else {
-              li[i].style.display = "none";
+        var input, filter, ul, li, a, i;
+        input = document.getElementById("DriverListContainer");
+        filter = input.value.toUpperCase();
+        ul = document.getElementById("DriverList");
+        li = ul.getElementsByTagName("li");
+        for (i = 0; i < li.length; i++) {
+            a = li[i].getElementsByTagName("a")[0];
+            if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+                li[i].style.display = "";
+            } else {
+                li[i].style.display = "none";
 
-          }
-      }
-  }
-
-  function CircuitSearchFunction() {
-      var input, filter, ul, li, a, i;
-      input = document.getElementById("CircuitListContainer");
-      filter = input.value.toUpperCase();
-      ul = document.getElementById("CircuitList");
-      li = ul.getElementsByTagName("li");
-      for (i = 0; i < li.length; i++) {
-          a = li[i].getElementsByTagName("a")[0];
-          if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
-              li[i].style.display = "";
-          } else {
-              li[i].style.display = "none";
-
-          }
-      }
-  }
-
-  $('li').addClass('unclicked');
-
-  $('li').on('click', function() {
-    temp_count = 0;
-    if(this["id"].includes("Driver")){
-      temp_count = NumberOfDriversSelected;
-    }else{
-      temp_count = NumberOfCircuitsSelected;
+            }
+        }
     }
 
-    if ($(this).hasClass('unclicked')){
+    function CircuitSearchFunction() {
+        var input, filter, ul, li, a, i;
+        input = document.getElementById("CircuitListContainer");
+        filter = input.value.toUpperCase();
+        ul = document.getElementById("CircuitList");
+        li = ul.getElementsByTagName("li");
+        for (i = 0; i < li.length; i++) {
+            a = li[i].getElementsByTagName("a")[0];
+            if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+                li[i].style.display = "";
+            } else {
+                li[i].style.display = "none";
 
-      if(temp_count < 5){
-        $(this).removeClass('unclicked');
-        $(this).addClass('clicked');
-        if(this["id"].includes("Driver")){
-          NumberOfDriversSelected += 1;
-        }else{
-          NumberOfCircuitsSelected += 1;
+            }
         }
-      }
-
-    }else if ($(this).has('unclicked')){
-
-      if(temp_count >-1){
-        $(this).removeClass('clicked');
-        $(this).addClass('unclicked');
-        if(this["id"].includes("Driver")){
-          NumberOfDriversSelected -= 1;
-        }else{
-          NumberOfCircuitsSelected -= 1;
-        }
-      }
-
     }
-  });
 
 
 
-</script>
 
-<script>
-
-  function exist(array, data){
-    for( i = 0; i < array.length; i++){
-      if(data == array[i]){
-        return true;
-      }
-    }
-    return false;
-  }
-
-  // Get a subset of the data based on the group
-  function getFilteredData_Constructor(data, ConstructorName) {
-    return data.filter(function(d) { return d.ConstructorName === ConstructorName; });
-  }
-
-  function getFilteredData_Year(data, StartYear, EndYear) {
-    return data.filter(function(d) { 
-      var status = false;
-      _tempYearArray = d.Years.split(",");
-      for(i = 1; i < _tempYearArray.length; i++){
-        if((parseInt(_tempYearArray[i]) >= parseInt(StartYear)) && (parseInt(_tempYearArray[i]) <= parseInt(EndYear)))
-          status = true;
-          break; 
-        }
-      return status;
-      });
-  }
-
-  const SVG_WIDTH = 700;
-  const SVG_HEIGHT = 300;
-  const BAR_GAP = SVG_HEIGHT/22;
-  const INNERBAR_OFFSET = BAR_GAP/3;
-  const BAR_WIDTH = BAR_GAP * 0.6;
+  const SVG_WIDTH = 500;
+  const SVG_HEIGHT = 500;
+  const BAR_GAP = SVG_WIDTH/12;
+  const INNERBAR_OFFSET = BAR_GAP * 0.35;
+  const INNERBAR_WIDTH = BAR_GAP * 0.3;
+  const OUTERBAR_WIDTH = BAR_GAP * 0.6;
+  const OUTERBAR_OFFSET = BAR_GAP * 0.2;
   var colorMin = 1;
 
   var colorMax = 8;
@@ -290,46 +221,68 @@
 
   var length = d3.scale.linear()
           .range([0, width]);
-
+  length.domain([0, 38]);
   var invertLength = d3.scale.linear()
           .range([lengthMin, lengthMax]).domain([0, width]);
 
-  // console.log(invertLength(4));
+  var xRange = d3.scale.linear().domain([-23, 15]).range([0, width])
 
-  // var color = d3.scale.linear()
-  //            // .interpolate(d3.interpolateHcl)
- //             .range([d3.rgb("#99000D"), d3.rgb('#fff5f0')]);
-  //        // .range(["red", "green"]);
-  // color.domain([colorMin, colorMax]);
+  var xAxis = d3.svg.axis().scale(xRange).tickSize(1).orient("bottom").tickSubdivide(true);
+
+  NumberOfDriversSelected = 0;
+  NumberOfCircuitsSelected = 0;
+
+  var DriverIDArray = ["1", "2", "3", "4", "5"];
+  var CircuitID = "20";
+
+
+ // <><><><><><><><><><><>><>> script script
+  function exist(array, data){
+    for( i = 0; i < array.length; i++){
+      if(data == array[i]){
+        return true;
+      }
+    }
+    return false;
+  }
+
+  // Get a subset of the data based on the group
+  function getFilteredData_Drivers(data, DriverIDArray) {
+    return data.filter(function(d) { 
+      // console.log(d);
+      // console.log((DriverIDArray.indexOf(d.DriverId) > -1));
+      return ((DriverIDArray.indexOf(d.DriverId) > -1)) ; });
+  }
+
+  function getFilteredData_Circuit_Drivers(data, CircuitID , DriverIDArray) {
+    return data.filter(function(d) { 
+      // console.log(d);
+      // console.log((d.CircuitId == CircuitID) & (DriverIDArray.indexOf(d.DriverId) > -1));
+      if(DriverIDArray.length > 0){
+        return ((d.CircuitId == CircuitID) & (DriverIDArray.indexOf(d.DriverId) > -1)) ;
+      }else{
+        return ((d.CircuitId == CircuitID)) ; }
+      });
+    
+  }
+
+
 
   function color(componentType){
     if(componentType.includes("stroke")){
       return "#99000D";
     }
     if(componentType.includes("inner_bar")){
-      return "#FC9272";
+      return "#b2df8a";
     }
     if(componentType.includes("outer_bar")){
-      return "#000000"
+      return "#fb9a99"
     }
   }
-  // function color(value){
-  //  switch(value){
-  //    case 1: return "#99000D"; break;
-  //    case 2: return "#CB181D"; break;
-  //    case 3: return "#EF3B2C"; break;
-  //    case 4: return "#FB6A4A"; break;
-  //    case 5: return "#FC9272"; break;
-  //    case 6: return "#FCBBA1"; break;
-  //    case 7: return "#FEE0D2"; break;
-  //    case 8: return "#fff5f0"; break;
-  //  }
-  // }
-
-  // length.domain([lengthMin, lengthMax]);
 
   var svg = d3.select("#visualisation_1")
         .append("svg")
+        .attr("id", "viz1")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom);
 
@@ -344,95 +297,314 @@
   d3.csv("/static/data/PreprocessedDataset2.csv", function(data){
     // console.log(error);
     // console.log(data);
-    DriverIDArray = [];
-    YearsArray = [];
-    // Turn data to usable format
-    data.forEach(function(d){
-      // console.log(parseInt(d.Pattern_1.split("_")[0]));
-      // console.log((d.Pattern_1.split("_"))[1].replace("%",""));
-      if(exist(DriverIDArray, d.DriverId)){
-        
-      }else{
-        DriverIDArray.push(d.DriverId);
+
+    d3.csv("/static/data/PreprocessedDataset3.csv", function(data2){
+      
+
+      YearsArray = [];
+      // CircuitID = "20";
+      // Turn data to usable format
+
+      // data.forEach(function(d){
+      //  // console.log(parseInt(d.Pattern_1.split("_")[0]));
+      //  // console.log((d.Pattern_1.split("_"))[1].replace("%",""));
+      //  if(exist(DriverIDArray, d.DriverId)){
+          
+      //  }else{
+      //    DriverIDArray.push(d.DriverId);
+      //  }
+      // });
+
+      function enterBars(_data, _data2){
+        var i1 = -1;
+        var i2 = -1;
+        // console.log(_data.length);
+        for(var i = 0; i < _data.length; i++){
+          g = svg.append("g").attr("id", String(i));
+          var d = _data[i];
+          // var xMove = 0.0;
+          // var d = data[i];
+
+          for(var j = 0; j < _data2.length; j++){
+            d2 = _data2[j];
+            if((d2.DriverId === d.DriverId) & (d2.CircuitId === CircuitID)){
+              g.append("rect")
+                .attr("transform",function(){
+                  return "translate(" + [length(23 + parseInt(d2.FirstLapChangeMin)), i*BAR_GAP + OUTERBAR_OFFSET] + ")";
+                })
+                .attr("width", length((parseInt(d.FirstLapChangeMax) - parseInt(d2.FirstLapChangeMin))))
+                .attr("height", OUTERBAR_WIDTH)
+                .attr("fill", function(){
+                  return color("outer_bar");})
+                // .on("mouseover", handleMouseOver)
+                // .on("mouseout", handleMouseOut)
+              // Display First Quartile
+              g.append("rect")
+                .attr("transform",function(){
+                  return "translate(" + [length(23 + parseInt(d2.FirstLapChangeFirstQuartile)) - 1, i*BAR_GAP + OUTERBAR_OFFSET - 3] + ")";
+                })
+                .attr("width", 2)
+                .attr("height", OUTERBAR_WIDTH + 6)
+                .attr("fill", function(){
+                  return color("stroke");})
+
+                // Display Second Quartile / Median
+              g.append("rect")
+                .attr("transform",function(){
+                  return "translate(" + [length(23 + parseInt(d2.FirstLapChangeMedian)) - 2, i*BAR_GAP + OUTERBAR_OFFSET - 3] + ")";
+                })
+                .attr("width", 4)
+                .attr("height", OUTERBAR_WIDTH + 6)
+                .attr("fill", function(){
+                  return color("stroke");})
+                //Display Third Quartile
+              g.append("rect")
+                .attr("transform",function(){
+                  return "translate(" + [length(23 + parseInt(d2.FirstLapChangeThirdQuartile)) - 1, i*BAR_GAP + OUTERBAR_OFFSET - 3] + ")";
+                })
+                .attr("width", 2)
+                .attr("height", OUTERBAR_WIDTH + 6)
+                .attr("fill", function(){
+                  return color("stroke");})
+            }
+
+          }
+          // console.log(length((parseInt(d.FirstLapChangeMax) - parseInt(d.FirstLapChangeMin))));
+          g.append("rect")
+            .attr("transform",function(){
+              return "translate(" + [length(23 + parseInt(d.FirstLapChangeMin)), i*BAR_GAP + INNERBAR_OFFSET] + ")";
+            })
+            .attr("width", length((parseInt(d.FirstLapChangeMax) - parseInt(d.FirstLapChangeMin))))
+            .attr("height", INNERBAR_WIDTH)
+            .attr("fill", function(){
+              return color("inner_bar");})
+            // .on("mouseover", handleMouseOver)
+            // .on("mouseout", handleMouseOut)
+          // Display First Quartile
+          g.append("rect")
+            .attr("transform",function(){
+              return "translate(" + [length(23 + parseInt(d.FirstLapChangeFirstQuartile)) - 1, i*BAR_GAP + INNERBAR_OFFSET - 3] + ")";
+            })
+            .attr("width", 2)
+            .attr("height", INNERBAR_WIDTH + 6)
+            .attr("fill", function(){
+              return color("stroke");})
+
+            // Display Second Quartile / Median
+          g.append("rect")
+            .attr("transform",function(){
+              return "translate(" + [length(23 + parseInt(d.FirstLapChangeMedian)) - 2, i*BAR_GAP + INNERBAR_OFFSET - 3] + ")";
+            })
+            .attr("width", 4)
+            .attr("height", INNERBAR_WIDTH + 6)
+            .attr("fill", function(){
+              return color("stroke");})
+            //Display Third Quartile
+          g.append("rect")
+            .attr("transform",function(){
+              return "translate(" + [length(23 + parseInt(d.FirstLapChangeThirdQuartile)) - 1, i*BAR_GAP + INNERBAR_OFFSET - 3] + ")";
+            })
+            .attr("width", 2)
+            .attr("height", INNERBAR_WIDTH + 6)
+            .attr("fill", function(){
+              return color("stroke");})
+          // Display x Axis
+          gXAxis = svg.append("g")
+              .attr("class", "x axis")
+              .attr("transform", "translate(" + 0 + "," + (i+1)*BAR_GAP + ")" )
+              .style("font", "8px times")
+              .call(xAxis);
+
+          // for (var property in data[i]) {
+          //     if (data[i].hasOwnProperty(property)) {
+          //      if(String(property).includes("Pattern_")){
+          //        // console.log(String(data[i][property]));
+
+          //      g.append("rect")
+          //      .attr("transform",function(){
+          //        return "translate(" + [0, i*BAR_GAP + INNERBAR_OFFSET] + ")";
+          //      })
+          //      .attr("width", width)
+          //      .attr("height", BAR_WIDTH)
+          //      .attr("fill", function(){
+          //        return color("inner_bar");})
+          //      .on("mouseover", handleMouseOver)
+          //      .on("mouseout", handleMouseOut)
+          //      }
+          //     }
+          // }
+        }
       }
-    });
+        console.log(DriverIDArray);
+        console.log(DriverIDArray.length);
+        console.log(CircuitID);
+        FilteredData = getFilteredData_Drivers(data, DriverIDArray);
+        FilteredData2 = getFilteredData_Circuit_Drivers(data2, CircuitID, DriverIDArray);
+        // console.log(FilteredData2)
+        // console.log(FilteredData2.length)
+        enterBars(FilteredData, FilteredData2);
+          NumberOfDriversSelected = 0;
+          NumberOfCircuitsSelected = 0;
 
-    function enterBars(data){
-      var i1 = -1;
-      var i2 = -1;
-      for(var i = 0; i < data.length; i++){
-        g = svg.append("g").attr("id", String(i));
-        var d = data[i];
-        // var xMove = 0.0;
-        // var d = data[i];
-        length.domain([d.FirstLapChangeMin, d.FirstLapChangeMax]);
-        g.append("rect")
-          .attr("transform",function(){
-            return "translate(" + [0, i*BAR_GAP + INNERBAR_OFFSET] + ")";
-          })
-          .attr("width", width)
-          .attr("height", BAR_WIDTH)
-          .attr("fill", function(){
-            return color("inner_bar");})
-          // .on("mouseover", handleMouseOver)
-          // .on("mouseout", handleMouseOut)
-        // for (var property in data[i]) {
-        //     if (data[i].hasOwnProperty(property)) {
-        //      if(String(property).includes("Pattern_")){
-        //        // console.log(String(data[i][property]));
 
-        //      g.append("rect")
-        //      .attr("transform",function(){
-        //        return "translate(" + [0, i*BAR_GAP + INNERBAR_OFFSET] + ")";
-        //      })
-        //      .attr("width", width)
-        //      .attr("height", BAR_WIDTH)
-        //      .attr("fill", function(){
-        //        return color("inner_bar");})
-        //      .on("mouseover", handleMouseOver)
-        //      .on("mouseout", handleMouseOut)
-        //      }
+        // function DriverSearchFunction() {
+        //     var input, filter, ul, li, a, i;
+        //     input = document.getElementById("DriverListContainer");
+        //     filter = input.value.toUpperCase();
+        //     ul = document.getElementById("DriverList");
+        //     li = ul.getElementsByTagName("li");
+        //     for (i = 0; i < li.length; i++) {
+        //         a = li[i].getElementsByTagName("a")[0];
+        //         if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+        //             li[i].style.display = "";
+        //         } else {
+        //             li[i].style.display = "none";
+
+        //         }
         //     }
         // }
-      }
-    }
+
+        // function CircuitSearchFunction() {
+        //     var input, filter, ul, li, a, i;
+        //     input = document.getElementById("CircuitListContainer");
+        //     filter = input.value.toUpperCase();
+        //     ul = document.getElementById("CircuitList");
+        //     li = ul.getElementsByTagName("li");
+        //     for (i = 0; i < li.length; i++) {
+        //         a = li[i].getElementsByTagName("a")[0];
+        //         if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+        //             li[i].style.display = "";
+        //         } else {
+        //             li[i].style.display = "none";
+
+        //         }
+        //     }
+        // }
 
 
-      enterBars(data);
+        $('li').addClass('unclicked');
 
-  // Create Event Handlers for mouse
-  function handleMouseOver(d) {  // Add interactivity
-    div.transition()    
-            .duration(200)    
-            .style("opacity", .9);    
-        div .style("width", 60)
-          .style("height", 70).html("Min: ")
-            .style("left", (d3.event.pageX + 10) + "px")    
-            .style("top", (d3.event.pageY - 28) + "px");  
-        
-        // Use D3 to select element, change color and size
+        $('li').on('click', function() {
+          temp_count = 0;
+          if(this["id"].includes("Driver")){
+            temp_count = NumberOfDriversSelected;
+          }else{
+            temp_count = NumberOfCircuitsSelected;
+          }
+
+          if ($(this).hasClass('unclicked')){
+
+              if(temp_count < 12){
+                if(this["id"].includes("Driver")){
+                  $(this).removeClass('unclicked');
+                  $(this).addClass('clicked');
+                  NumberOfDriversSelected += 1;
+                  // console.log(this.innerHTML)
+                  DriverIDArray.push(this.textContent);               
+                  d3.select("#viz1").selectAll("g").remove();
+              FilteredData = getFilteredData_Drivers(data, DriverIDArray);
+              FilteredData2 = getFilteredData_Circuit_Drivers(data2, CircuitID, DriverIDArray);
+              console.log(DriverIDArray);
+              // console.log(FilteredData2)
+              // console.log(FilteredData2.length)
+              enterBars(FilteredData, FilteredData2);
+                }else{
+                  if(temp_count < 1){
+                    $(this).removeClass('unclicked');
+                    $(this).addClass('clicked');
+                    NumberOfCircuitsSelected += 1;
+                    // console.log(this.textContent);
+                    CircuitID = String(this.textContent);
+                    console.log(CircuitID);
+                    d3.select("#viz1").selectAll("g").remove();
+                  FilteredData = getFilteredData_Drivers(data, DriverIDArray);
+                FilteredData2 = getFilteredData_Circuit_Drivers(data2, CircuitID, DriverIDArray);
+                // console.log(FilteredData2)
+                // console.log(FilteredData2.length)
+                enterBars(FilteredData, FilteredData2);
+              }
+                }
+            }
+
+          }else if ($(this).has('unclicked')){
+
+            if(temp_count > 0){
+              $(this).removeClass('clicked');
+              $(this).addClass('unclicked');
+              if(this["id"].includes("Driver")){
+                NumberOfDriversSelected -= 1;
+                // var array = [2, 5, 9];
+            var index = DriverIDArray.indexOf(String(this.textContent));
+            if (index > -1) {
+              DriverIDArray.splice(index, 1);
+              console.log("DriverIDArray length");
+              console.log(DriverIDArray);
+              if(DriverIDArray.length > 0){
+                d3.select("#viz1").selectAll("g").remove();
+              FilteredData = getFilteredData_Drivers(data, DriverIDArray);
+              FilteredData2 = getFilteredData_Circuit_Drivers(data2, CircuitID, DriverIDArray);
+              console.log("FilteredData2");
+              console.log(FilteredData2);
+              // console.log(FilteredData2.length)
+              enterBars(FilteredData, FilteredData2);
+              }else if(DriverIDArray.length == 0){
+                d3.select("#viz1").selectAll("g").remove();
+              }
+            }
+
+              }else{
+                NumberOfCircuitsSelected -= 1;
+                d3.select("#viz1").selectAll("g").remove();
+                CircuitID = "";
+            FilteredData = getFilteredData_Drivers(data, DriverIDArray);
+            FilteredData2 = getFilteredData_Circuit_Drivers(data2, CircuitID, DriverIDArray);
+            // console.log(FilteredData2)
+            // console.log(FilteredData2.length)
+            enterBars(FilteredData, FilteredData2);
+              }
+            }
+
+          }
+        });
+
+
+    // Create Event Handlers for mouse
+    function handleMouseOver(d) {  // Add interactivity
+      div.transition()    
+              .duration(200)    
+              .style("opacity", .9);    
+          div .style("width", 60)
+            .style("height", 70).html("Min :")
+              .style("left", (d3.event.pageX + 10) + "px")    
+              .style("top", (d3.event.pageY - 28) + "px");  
+          
+          // Use D3 to select element, change color and size
+            d3.select(this).attr(
+            {height: BAR_GAP*0.8}
+            );
+            // console.log(this);
+        }
+
+    function handleMouseOut(d){
+
+      div.transition()    
+                  .duration(500)    
+                  .style("opacity", 0); 
+          // Use D3 to select element, change color back to normal
           d3.select(this).attr(
-          {height: BAR_GAP*0.8}
-          );
-          console.log(d3.select(this).attr("id"));
-      }
+            {height: BAR_GAP*0.6}
+            );
+        }
 
-  function handleMouseOut(d){
-
-    div.transition()    
-                .duration(500)    
-                .style("opacity", 0); 
-        // Use D3 to select element, change color back to normal
-        d3.select(this).attr(
-          {height: BAR_GAP*0.6}
-          );
-      }
+    });
   });
 
   </script>
 
 
-<script type="text/javascript" src="{{ url_for('static',filename='js/visualisation_1.js')}}"></script>
+
+
+<!-- <script type="text/javascript" src="{{ url_for('static',filename='js/visualisation_1.js')}}"></script> -->
 
 </body>
 </html>

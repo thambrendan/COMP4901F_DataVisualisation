@@ -20,7 +20,7 @@
 
 
     #CircuitListContainer {
-      background-image: url('/css/searchicon.png');
+      /*background-image: url('/css/searchicon.png');*/
       background-position: 10px 12px;
       background-repeat: no-repeat;
       width: 100%;
@@ -46,7 +46,7 @@
       border: 1px solid #ddd;
       margin-top: -1px; /* Prevent double borders */
       /* background-color: #f6f6f6; */
-      padding: 12px;
+      padding: 6px;
       text-decoration: none;
       font-size: 12px;
       color: black;
@@ -58,7 +58,7 @@
       border: 1px solid #ddd;
       margin-top: -1px; /* Prevent double borders */
       /* background-color: #f6f6f6; */
-      padding: 12px;
+      padding: 6px;
       text-decoration: none;
       font-size: 12px;
       color: black;
@@ -97,7 +97,7 @@
       <input type="text" id="DriverListContainer" onkeyup="DriverSearchFunction()" placeholder="Search for names.." title="Type in a name">
 
       <ul id="DriverList">
-        <li  id = "Driver1"><a href="#">321</a></li>
+<!--         <li  id = "Driver1"><a href="#">321</a></li>
         <li  id = "Driver2"><a href="#">1</a></li>
 
         <li  id = "Driver3"><a href="#">32</a></li>
@@ -105,7 +105,7 @@
 
         <li  id = "Driver5"><a href="#">47</a></li>
         <li  id = "Driver6"><a href="#">3</a></li>
-        <li  id = "Driver7"><a href="#">80</a></li>
+        <li  id = "Driver7"><a href="#">80</a></li> -->
       </ul>
 
     </div>
@@ -127,7 +127,7 @@
       <input type="text" id="CircuitListContainer" onkeyup="CircuitSearchFunction()" placeholder="Search for names.." title="Type in a name">
 
       <ul id="CircuitList">
-        <li id = "Circuit1"><a href="#">20</a></li>
+<!--         <li id = "Circuit1"><a href="#">20</a></li>
         <li id = "Circuit2"><a href="#">54</a></li>
 
         <li id = "Circuit3"><a href="#">1</a></li>
@@ -135,7 +135,7 @@
 
         <li id = "Circuit5"><a href="#">18</a></li>
         <li id = "Circuit6"><a href="#">17</a></li>
-        <li id = "Circuit7"><a href="#">70</a></li>
+        <li id = "Circuit7"><a href="#">70</a></li> -->
       </ul>
 
 
@@ -200,13 +200,14 @@
 
 
 
-	const SVG_WIDTH = 500;
+	const SVG_WIDTH = 700;
 	const SVG_HEIGHT = 500;
-	const BAR_GAP = SVG_WIDTH/12;
+	const BAR_GAP = SVG_HEIGHT/12 - 1;
 	const INNERBAR_OFFSET = BAR_GAP * 0.35;
 	const INNERBAR_WIDTH = BAR_GAP * 0.3;
 	const OUTERBAR_WIDTH = BAR_GAP * 0.6;
 	const OUTERBAR_OFFSET = BAR_GAP * 0.2;
+	const GRAPH_RIGHTOFFSET = 150;
 	var colorMin = 1;
 
 	var colorMax = 8;
@@ -216,7 +217,7 @@
 	var lengthMax = 1000;
 
 	var margin ={top: 20, right: 20, bottom: 20, left: 20},
-		width = SVG_WIDTH - margin.left - margin.right,
+		width = SVG_WIDTH - margin.left - margin.right - GRAPH_RIGHTOFFSET,
 		height = SVG_HEIGHT - margin.top - margin.bottom;
 
 	var length = d3.scale.linear()
@@ -239,7 +240,7 @@
  // <><><><><><><><><><><>><>> script script
 	function exist(array, data){
 		for( i = 0; i < array.length; i++){
-			if(data == array[i]){
+			if(data === array[i]){
 				return true;
 			}
 		}
@@ -283,8 +284,8 @@
 	var svg = d3.select("#visualisation_1")
 				.append("svg")
 				.attr("id", "viz1")
-				.attr("width", width + margin.left + margin.right)
-				.attr("height", height + margin.top + margin.bottom);
+				.attr("width", SVG_WIDTH)
+				.attr("height", SVG_HEIGHT);
 
 	// Define the div for the tooltip
 	var div = d3.select("#visualisation_1").append("div")	
@@ -300,21 +301,69 @@
 
 		d3.csv("/static/data/PreprocessedDataset3.csv", function(data2){
 			
-
-			YearsArray = [];
+			var _DriversOptions = [];
+			var _CircuitsOptions = [];
+			// YearsArray = [];
 			// CircuitID = "20";
 			// Turn data to usable format
-
-			// data.forEach(function(d){
-			// 	// console.log(parseInt(d.Pattern_1.split("_")[0]));
-			// 	// console.log((d.Pattern_1.split("_"))[1].replace("%",""));
-			// 	if(exist(DriverIDArray, d.DriverId)){
+			_DriversSelectionList = d3.select("#DriverList");
+			_CircuitsSelectionList = d3.select("#CircuitList");
+			data2.forEach(function(d){
+				// console.log(parseInt(d.Pattern_1.split("_")[0]));
+				// console.log((d.Pattern_1.split("_"))[1].replace("%",""));
+				if(_DriversOptions.length > -1){
+					if(exist(_DriversOptions, d.DriverId)){
 					
-			// 	}else{
-			// 		DriverIDArray.push(d.DriverId);
-			// 	}
-			// });
+					}else{
+						_DriversOptions.push(d.DriverId);
+						if(exist(DriverIDArray, d.DriverId)){
+							_DriversSelectionList.append("li").attr("id", String("Driver_" + d.DriverId))
+												.attr("class", "clicked")
+												.append("a").attr("href", "#")
+												.text(d.DriverName)
+												.style("font", "10px times")
+							console.log(d.DriverName)
+						}else{
+							_DriversSelectionList.append("li").attr("id", String("Driver_" + d.DriverId))
+												.attr("class", "unclicked")
+												.append("a").attr("href", "#")
+												.text(d.DriverName)
+												.style("font", "10px times")
+						}
+					}
+				}
 
+				if(_CircuitsOptions.length > -1){
+					if(exist(_CircuitsOptions, d.CircuitId)){
+
+					}else{
+						if(d.CircuitId == CircuitID){
+							_CircuitsOptions.push(d.CircuitId);
+							_CircuitsSelectionList.append("li").attr("id", String("Circuit_" + d.CircuitId))
+												.attr("class", "clicked")
+												.append("a").attr("href", "#")
+												.text(d.CircuitName)
+												.style("font", "10px times")
+						console.log(d.CircuitName)
+						}else{
+							_CircuitsOptions.push(d.CircuitId);
+							_CircuitsSelectionList.append("li").attr("id", String("Circuit_" + d.CircuitId))
+												.attr("class", "unclicked")
+												.append("a").attr("href", "#")
+												.text(d.CircuitName)
+												.style("font", "10px times")	
+						}
+
+					}
+
+				}
+
+
+			});
+			console.log("_DriversSelectionList");
+			console.log(_DriversSelectionList.length);
+			console.log("_CircuitsSelectionList");
+			console.log(_CircuitsSelectionList.length);
 			function enterBars(_data, _data2){
 				var i1 = -1;
 				var i2 = -1;
@@ -330,7 +379,7 @@
 						if((d2.DriverId === d.DriverId) & (d2.CircuitId === CircuitID)){
 							g.append("rect")
 								.attr("transform",function(){
-									return "translate(" + [length(23 + parseInt(d2.FirstLapChangeMin)), i*BAR_GAP + OUTERBAR_OFFSET] + ")";
+									return "translate(" + [length(23 + parseInt(d2.FirstLapChangeMin)) + GRAPH_RIGHTOFFSET, i*BAR_GAP + OUTERBAR_OFFSET] + ")";
 								})
 								.attr("width", length((parseInt(d.FirstLapChangeMax) - parseInt(d2.FirstLapChangeMin))))
 								.attr("height", OUTERBAR_WIDTH)
@@ -341,7 +390,7 @@
 							// Display First Quartile
 							g.append("rect")
 								.attr("transform",function(){
-									return "translate(" + [length(23 + parseInt(d2.FirstLapChangeFirstQuartile)) - 1, i*BAR_GAP + OUTERBAR_OFFSET - 3] + ")";
+									return "translate(" + [length(23 + parseInt(d2.FirstLapChangeFirstQuartile)) - 1 + GRAPH_RIGHTOFFSET, i*BAR_GAP + OUTERBAR_OFFSET - 3] + ")";
 								})
 								.attr("width", 2)
 								.attr("height", OUTERBAR_WIDTH + 6)
@@ -351,7 +400,7 @@
 								// Display Second Quartile / Median
 							g.append("rect")
 								.attr("transform",function(){
-									return "translate(" + [length(23 + parseInt(d2.FirstLapChangeMedian)) - 2, i*BAR_GAP + OUTERBAR_OFFSET - 3] + ")";
+									return "translate(" + [length(23 + parseInt(d2.FirstLapChangeMedian)) - 2 + GRAPH_RIGHTOFFSET, i*BAR_GAP + OUTERBAR_OFFSET - 3] + ")";
 								})
 								.attr("width", 4)
 								.attr("height", OUTERBAR_WIDTH + 6)
@@ -360,7 +409,7 @@
 								//Display Third Quartile
 							g.append("rect")
 								.attr("transform",function(){
-									return "translate(" + [length(23 + parseInt(d2.FirstLapChangeThirdQuartile)) - 1, i*BAR_GAP + OUTERBAR_OFFSET - 3] + ")";
+									return "translate(" + [length(23 + parseInt(d2.FirstLapChangeThirdQuartile)) - 1 + GRAPH_RIGHTOFFSET, i*BAR_GAP + OUTERBAR_OFFSET - 3] + ")";
 								})
 								.attr("width", 2)
 								.attr("height", OUTERBAR_WIDTH + 6)
@@ -372,7 +421,7 @@
 					// console.log(length((parseInt(d.FirstLapChangeMax) - parseInt(d.FirstLapChangeMin))));
 					g.append("rect")
 						.attr("transform",function(){
-							return "translate(" + [length(23 + parseInt(d.FirstLapChangeMin)), i*BAR_GAP + INNERBAR_OFFSET] + ")";
+							return "translate(" + [length(23 + parseInt(d.FirstLapChangeMin)) + GRAPH_RIGHTOFFSET, i*BAR_GAP + INNERBAR_OFFSET] + ")";
 						})
 						.attr("width", length((parseInt(d.FirstLapChangeMax) - parseInt(d.FirstLapChangeMin))))
 						.attr("height", INNERBAR_WIDTH)
@@ -383,7 +432,7 @@
 					// Display First Quartile
 					g.append("rect")
 						.attr("transform",function(){
-							return "translate(" + [length(23 + parseInt(d.FirstLapChangeFirstQuartile)) - 1, i*BAR_GAP + INNERBAR_OFFSET - 3] + ")";
+							return "translate(" + [length(23 + parseInt(d.FirstLapChangeFirstQuartile)) - 1 + GRAPH_RIGHTOFFSET, i*BAR_GAP + INNERBAR_OFFSET - 3] + ")";
 						})
 						.attr("width", 2)
 						.attr("height", INNERBAR_WIDTH + 6)
@@ -393,7 +442,7 @@
 						// Display Second Quartile / Median
 					g.append("rect")
 						.attr("transform",function(){
-							return "translate(" + [length(23 + parseInt(d.FirstLapChangeMedian)) - 2, i*BAR_GAP + INNERBAR_OFFSET - 3] + ")";
+							return "translate(" + [length(23 + parseInt(d.FirstLapChangeMedian)) - 2 + GRAPH_RIGHTOFFSET, i*BAR_GAP + INNERBAR_OFFSET - 3] + ")";
 						})
 						.attr("width", 4)
 						.attr("height", INNERBAR_WIDTH + 6)
@@ -402,7 +451,7 @@
 						//Display Third Quartile
 					g.append("rect")
 						.attr("transform",function(){
-							return "translate(" + [length(23 + parseInt(d.FirstLapChangeThirdQuartile)) - 1, i*BAR_GAP + INNERBAR_OFFSET - 3] + ")";
+							return "translate(" + [length(23 + parseInt(d.FirstLapChangeThirdQuartile)) - 1 + GRAPH_RIGHTOFFSET, i*BAR_GAP + INNERBAR_OFFSET - 3] + ")";
 						})
 						.attr("width", 2)
 						.attr("height", INNERBAR_WIDTH + 6)
@@ -411,9 +460,17 @@
 					// Display x Axis
 					gXAxis = svg.append("g")
 					    .attr("class", "x axis")
-					    .attr("transform", "translate(" + 0 + "," + (i+1)*BAR_GAP + ")" )
+					    .attr("transform", "translate(" + GRAPH_RIGHTOFFSET + "," + (i+1)*BAR_GAP + ")" )
 					    .style("font", "8px times")
 					    .call(xAxis);
+
+					// Display label
+
+					g.append("text")
+					    .attr("transform", "translate(" + 0 + "," + (i+1)*BAR_GAP + ")" )
+				        .attr("x", 0)
+				        .attr("y", -INNERBAR_OFFSET)
+				        .text(d.DriverName);
 
 					// for (var property in data[i]) {
 					//     if (data[i].hasOwnProperty(property)) {
@@ -443,46 +500,8 @@
 				// console.log(FilteredData2)
 				// console.log(FilteredData2.length)
 				enterBars(FilteredData, FilteredData2);
-			  	NumberOfDriversSelected = 0;
-			  	NumberOfCircuitsSelected = 0;
-
-
-			  // function DriverSearchFunction() {
-			  //     var input, filter, ul, li, a, i;
-			  //     input = document.getElementById("DriverListContainer");
-			  //     filter = input.value.toUpperCase();
-			  //     ul = document.getElementById("DriverList");
-			  //     li = ul.getElementsByTagName("li");
-			  //     for (i = 0; i < li.length; i++) {
-			  //         a = li[i].getElementsByTagName("a")[0];
-			  //         if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
-			  //             li[i].style.display = "";
-			  //         } else {
-			  //             li[i].style.display = "none";
-
-			  //         }
-			  //     }
-			  // }
-
-			  // function CircuitSearchFunction() {
-			  //     var input, filter, ul, li, a, i;
-			  //     input = document.getElementById("CircuitListContainer");
-			  //     filter = input.value.toUpperCase();
-			  //     ul = document.getElementById("CircuitList");
-			  //     li = ul.getElementsByTagName("li");
-			  //     for (i = 0; i < li.length; i++) {
-			  //         a = li[i].getElementsByTagName("a")[0];
-			  //         if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
-			  //             li[i].style.display = "";
-			  //         } else {
-			  //             li[i].style.display = "none";
-
-			  //         }
-			  //     }
-			  // }
-
-
-			  $('li').addClass('unclicked');
+			  	NumberOfDriversSelected = 5;
+			  	NumberOfCircuitsSelected = 1;
 
 			  $('li').on('click', function() {
 			    temp_count = 0;
@@ -500,7 +519,7 @@
 				        	$(this).addClass('clicked');
 				        	NumberOfDriversSelected += 1;
 				        	// console.log(this.innerHTML)
-				        	DriverIDArray.push(this.textContent);			          
+				        	DriverIDArray.push(this.id.split("_")[1]);			          
 				        	d3.select("#viz1").selectAll("g").remove();
 							FilteredData = getFilteredData_Drivers(data, DriverIDArray);
 							FilteredData2 = getFilteredData_Circuit_Drivers(data2, CircuitID, DriverIDArray);
@@ -514,7 +533,7 @@
 				        		$(this).addClass('clicked');
 					        	NumberOfCircuitsSelected += 1;
 					        	// console.log(this.textContent);
-					        	CircuitID = String(this.textContent);
+					        	CircuitID = String(this.id.split("_")[1]);
 					        	console.log(CircuitID);
 					        	d3.select("#viz1").selectAll("g").remove();
 							  	FilteredData = getFilteredData_Drivers(data, DriverIDArray);
@@ -526,7 +545,7 @@
 				        }
 			    	}
 
-			    }else if ($(this).has('unclicked')){
+			    }else if ($(this).hasClass('clicked')){
 
 			      if(temp_count > 0){
 			        $(this).removeClass('clicked');
@@ -534,7 +553,7 @@
 			        if(this["id"].includes("Driver")){
 				        NumberOfDriversSelected -= 1;
 				        // var array = [2, 5, 9];
-						var index = DriverIDArray.indexOf(String(this.textContent));
+						var index = DriverIDArray.indexOf(String(this.id.split("_")[1]));
 						if (index > -1) {
 						  DriverIDArray.splice(index, 1);
 						  console.log("DriverIDArray length");
@@ -543,8 +562,8 @@
 						  	d3.select("#viz1").selectAll("g").remove();
 							FilteredData = getFilteredData_Drivers(data, DriverIDArray);
 							FilteredData2 = getFilteredData_Circuit_Drivers(data2, CircuitID, DriverIDArray);
-							console.log("FilteredData2");
-							console.log(FilteredData2);
+							// console.log("FilteredData2");
+							// console.log(FilteredData2);
 							// console.log(FilteredData2.length)
 							enterBars(FilteredData, FilteredData2);
 						  }else if(DriverIDArray.length == 0){
