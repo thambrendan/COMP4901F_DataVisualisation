@@ -45,7 +45,7 @@
     #DriverList  li a {
       border: 1px solid #ddd;
       margin-top: -1px; /* Prevent double borders */
-      /* background-color: #f6f6f6; */
+      /* background-VIZ1_color: #f6f6f6; */
       padding: 6px;
       text-decoration: none;
       font-size: 12px;
@@ -57,7 +57,7 @@
     #CircuitList li a {
       border: 1px solid #ddd;
       margin-top: -1px; /* Prevent double borders */
-      /* background-color: #f6f6f6; */
+      /* background-VIZ1_color: #f6f6f6; */
       padding: 6px;
       text-decoration: none;
       font-size: 12px;
@@ -92,50 +92,44 @@
   <div class = "row">
     <div class = "col-2">
 
-      <h3>Driver's Name</h3>
+      <h4>Drivers</h4>
 
       <input type="text" id="DriverListContainer" onkeyup="DriverSearchFunction()" placeholder="Search for names.." title="Type in a name">
 
       <ul id="DriverList">
-<!--         <li  id = "Driver1"><a href="#">321</a></li>
-        <li  id = "Driver2"><a href="#">1</a></li>
-
-        <li  id = "Driver3"><a href="#">32</a></li>
-        <li  id = "Driver4"><a href="#">54</a></li>
-
-        <li  id = "Driver5"><a href="#">47</a></li>
-        <li  id = "Driver6"><a href="#">3</a></li>
-        <li  id = "Driver7"><a href="#">80</a></li> -->
       </ul>
 
     </div>
 
     <div class ="col-8">
-      Visualisation Container
-      <div class = "row" id = "visualisation_1">
-        Visualisation 1
+      <div class = "row" id = "visualisation_1_heading">
+      	<h4>Visualisation 1</h4>
       </div>
-      <div class = "row" id = "visualisation_2">
-        Visualisation 2
+      <div class = "row" id = "viz1_legends" style = "background-color: #afafaf">
+
+      </div>
+
+      <div class = "row" id = "visualisation_1" style = "background-color: #e1e6e8">
+        
+      </div>
+
+      <div class = "row" id = "visualisation_1_heading">
+      	<h4>Visualisation 2</h4>
+      	<div id = "currentCircuit"> </div>
+      </div>
+
+      <div class = "row" id = "visualisation_2" style = "background-color: #e1e6e8">
+        
       </div>
     </div>
 
     <div class ="col-2">
       
-      <h3>Circuits </h3>
+      <h4>Circuits </h4>
 
       <input type="text" id="CircuitListContainer" onkeyup="CircuitSearchFunction()" placeholder="Search for names.." title="Type in a name">
 
       <ul id="CircuitList">
-<!--         <li id = "Circuit1"><a href="#">20</a></li>
-        <li id = "Circuit2"><a href="#">54</a></li>
-
-        <li id = "Circuit3"><a href="#">1</a></li>
-        <li id = "CIrcuit4"><a href="#">16</a></li>
-
-        <li id = "Circuit5"><a href="#">18</a></li>
-        <li id = "Circuit6"><a href="#">17</a></li>
-        <li id = "Circuit7"><a href="#">70</a></li> -->
       </ul>
 
 
@@ -163,6 +157,173 @@
 
 
 <script>
+
+	//Parameters
+
+	//Viz1 Legends
+	const VIZ1_LEGEND_SVG_WIDTH = 700;
+	const VIZ1_LEGEND_SVG_HEIGHT = 50;
+	const VIZ1_LEGEND_OFFSET = VIZ1_LEGEND_SVG_HEIGHT * 0.2;
+	const VIZ1_LEGEND_RIGHT_OFFSET = 50;
+
+	// Viz1 
+	const VIZ1_SVG_WIDTH = VIZ1_LEGEND_SVG_WIDTH;
+	const VIZ1_SVG_HEIGHT = 500;
+	const BAR_GAP = VIZ1_SVG_HEIGHT/12 - 1;
+	const INNERBAR_OFFSET = BAR_GAP * 0.35;
+	const INNERBAR_WIDTH = BAR_GAP * 0.3;
+	const OUTERBAR_WIDTH = BAR_GAP * 0.6;
+	const OUTERBAR_OFFSET = BAR_GAP * 0.2;
+	const GRAPH_RIGHTOFFSET = 150;
+
+	//Viz 1 legends
+
+	//viz 2
+	const VIZ2_SVG_WIDTH = 500;
+	const VIZ2_SVG_HEIGHT = 500;
+	// const BAR_GAP = VIZ2_SVG_WIDTH/22;
+	// const BAR_WIDTH = BAR_GAP * 0.6;
+	const INNER_RADIUS = 125;
+	const OUTER_RADIUS = VIZ2_SVG_WIDTH/2.0 * 0.8;
+
+	// Visualisation 1 legends
+	var svglegend1 = d3.select("#viz1_legends")
+						.append("svg")
+						.attr("id", "legends")
+						.attr("width", VIZ1_LEGEND_SVG_WIDTH)
+						.attr("height", VIZ1_LEGEND_SVG_HEIGHT);
+
+	var svglegend1label = d3.select("#viz1_legends")
+						.append("svg")
+						.attr("id" , "labels")
+						.attr("width", VIZ1_LEGEND_SVG_WIDTH)
+						.attr("height", VIZ1_LEGEND_SVG_HEIGHT);
+
+	for(var i = 0; i < 4; i++){
+		switch(i){
+			case 0: svglegend1.append("rect")
+						.attr("width", 50)
+						.attr("height", INNERBAR_WIDTH)
+						.attr("transform",function(){
+							return "translate(" + [i * VIZ1_LEGEND_SVG_WIDTH/4 + VIZ1_LEGEND_SVG_WIDTH/8 - 25, 2*VIZ1_LEGEND_OFFSET] + ")";
+						})
+						.style("fill", "#b2df8a")
+					svglegend1label.append("text")
+						.text("The overall first lap change")
+						.style("font", "12px times")
+						.attr("width", 50)
+						.attr("height", INNERBAR_WIDTH)
+						.attr("text-anchor", "middle")
+						.attr("transform",function(){
+							return "translate(" + [i * VIZ1_LEGEND_SVG_WIDTH/4 + VIZ1_LEGEND_SVG_WIDTH/8, VIZ1_LEGEND_OFFSET] + ")";
+						})
+						.style("fill", "#00000")
+					svglegend1label.append("text")
+						.text("of driver")
+						.style("font", "12px times")
+						.attr("width", 50)
+						.attr("height", INNERBAR_WIDTH)
+						.attr("text-anchor", "middle")
+						.attr("transform",function(){
+							return "translate(" + [i * VIZ1_LEGEND_SVG_WIDTH/4 + VIZ1_LEGEND_SVG_WIDTH/8, VIZ1_LEGEND_OFFSET + 15] + ")";
+						})
+						.style("fill", "#00000")
+						break;
+			case 1: svglegend1.append("rect")
+						.attr("width", 50)
+						.attr("height", OUTERBAR_WIDTH)
+						.attr("transform",function(){
+							return "translate(" + [i * VIZ1_LEGEND_SVG_WIDTH/4 + VIZ1_LEGEND_SVG_WIDTH/8 - 25, VIZ1_LEGEND_OFFSET] + ")";
+						})
+						.style("fill", "#fb9a99")
+					svglegend1label.append("text")
+						.text("The first lap change of driver")
+						.style("font", "12px times")
+						.attr("width", 50)
+						.attr("height", INNERBAR_WIDTH)
+						.attr("text-anchor", "middle")
+						.attr("transform",function(){
+							return "translate(" + [i * VIZ1_LEGEND_SVG_WIDTH/4 + VIZ1_LEGEND_SVG_WIDTH/8, VIZ1_LEGEND_OFFSET] + ")";
+						})
+						.style("fill", "#00000")
+					svglegend1label.append("text")
+						.text("in selected circuit")
+						.style("font", "12px times")
+						.attr("width", 50)
+						.attr("height", INNERBAR_WIDTH)
+						.attr("text-anchor", "middle")
+						.attr("transform",function(){
+							return "translate(" + [i * VIZ1_LEGEND_SVG_WIDTH/4 + VIZ1_LEGEND_SVG_WIDTH/8, VIZ1_LEGEND_OFFSET + 15] + ")";
+						})
+						.style("fill", "#00000")
+						break;
+			case 2: svglegend1.append("rect")
+						.attr("width", 2)
+						.attr("height", INNERBAR_WIDTH + 6)
+						.attr("transform",function(){
+							return "translate(" + [i * VIZ1_LEGEND_SVG_WIDTH/4 + VIZ1_LEGEND_SVG_WIDTH/8 - 1, 2*VIZ1_LEGEND_OFFSET - 6] + ")";
+						})
+						.style("fill", "#99000D")
+					svglegend1label.append("text")
+						.text("The first/third quartile of")
+						.style("font", "12px times")
+						.attr("width", 50)
+						.attr("height", INNERBAR_WIDTH)
+						.attr("text-anchor", "middle")
+						.attr("transform",function(){
+							return "translate(" + [i * VIZ1_LEGEND_SVG_WIDTH/4 + VIZ1_LEGEND_SVG_WIDTH/8, VIZ1_LEGEND_OFFSET] + ")";
+						})
+						.style("fill", "#00000")
+					svglegend1label.append("text")
+						.text("first lap change")
+						.style("font", "12px times")
+						.attr("width", 50)
+						.attr("height", INNERBAR_WIDTH)
+						.attr("text-anchor", "middle")
+						.attr("transform",function(){
+							return "translate(" + [i * VIZ1_LEGEND_SVG_WIDTH/4 + VIZ1_LEGEND_SVG_WIDTH/8, VIZ1_LEGEND_OFFSET + 15] + ")";
+						})
+						.style("fill", "#00000")
+						break;
+			case 3: svglegend1.append("rect")
+						.attr("width", 4)
+						.attr("height", OUTERBAR_WIDTH + 6)
+						.attr("transform",function(){
+							return "translate(" + [i * VIZ1_LEGEND_SVG_WIDTH/4 + VIZ1_LEGEND_SVG_WIDTH/8 - 2, VIZ1_LEGEND_OFFSET - 3] + ")";
+						})
+						.style("fill", "#99000D")
+					svglegend1label.append("text")
+						.text("The median of first lap change")
+						.style("font", "12px times")
+						.attr("width", 50)
+						.attr("height", INNERBAR_WIDTH)
+						.attr("text-anchor", "middle")
+						.attr("transform",function(){
+							return "translate(" + [i * VIZ1_LEGEND_SVG_WIDTH/4 + VIZ1_LEGEND_SVG_WIDTH/8, VIZ1_LEGEND_OFFSET] + ")";
+						})
+						.style("fill", "#00000")
+					// svglegend1label.append("text")
+					// 	.text("first lap change")
+					// 	.style("font", "12px times")
+					// 	.attr("width", 50)
+					// 	.attr("height", INNERBAR_WIDTH)
+					// 	.attr("text-anchor", "middle")
+					// 	.attr("transform",function(){
+					// 		return "translate(" + [i * VIZ1_LEGEND_SVG_WIDTH/4 + VIZ1_LEGEND_SVG_WIDTH/8, VIZ1_LEGEND_OFFSET + 15] + ")";
+					// 	})
+					// 	.style("fill", "#00000")
+						break;
+
+		}
+	}
+
+
+	// Visualisation 1
+
+	var viz1_dataset1 = [];
+	var viz1_dataset2 = [];
+	var viz2_dataset1 = [];
+
 	function DriverSearchFunction() {
 	      var input, filter, ul, li, a, i;
 	      input = document.getElementById("DriverListContainer");
@@ -197,28 +358,25 @@
 	      }
 	  }
 
+	// const VIZ1_SVG_WIDTH = VIZ1_LEGEND_SVG_WIDTH;
+	// const VIZ1_SVG_HEIGHT = 500;
+	// const BAR_GAP = VIZ1_SVG_HEIGHT/12 - 1;
+	// const INNERBAR_OFFSET = BAR_GAP * 0.35;
+	// const INNERBAR_WIDTH = BAR_GAP * 0.3;
+	// const OUTERBAR_WIDTH = BAR_GAP * 0.6;
+	// const OUTERBAR_OFFSET = BAR_GAP * 0.2;
+	// const GRAPH_RIGHTOFFSET = 150;
+	var VIZ1_colorMin = 1;
 
-
-
-	const SVG_WIDTH = 700;
-	const SVG_HEIGHT = 500;
-	const BAR_GAP = SVG_HEIGHT/12 - 1;
-	const INNERBAR_OFFSET = BAR_GAP * 0.35;
-	const INNERBAR_WIDTH = BAR_GAP * 0.3;
-	const OUTERBAR_WIDTH = BAR_GAP * 0.6;
-	const OUTERBAR_OFFSET = BAR_GAP * 0.2;
-	const GRAPH_RIGHTOFFSET = 150;
-	var colorMin = 1;
-
-	var colorMax = 8;
+	var VIZ1_colorMax = 8;
 
 	var lengthMin = 0;
 
 	var lengthMax = 1000;
 
 	var margin ={top: 20, right: 20, bottom: 20, left: 20},
-		width = SVG_WIDTH - margin.left - margin.right - GRAPH_RIGHTOFFSET,
-		height = SVG_HEIGHT - margin.top - margin.bottom;
+		width = VIZ1_SVG_WIDTH - margin.left - margin.right - GRAPH_RIGHTOFFSET,
+		height = VIZ1_SVG_HEIGHT - margin.top - margin.bottom;
 
 	var length = d3.scale.linear()
 					.range([0, width]);
@@ -269,8 +427,11 @@
 
 
 
-	function color(componentType){
-		if(componentType.includes("stroke")){
+	function VIZ1_color(componentType){
+		if(componentType.includes("quartile")){
+			return "#99000D";
+		}
+		if(componentType.includes("median")){
 			return "#99000D";
 		}
 		if(componentType.includes("inner_bar")){
@@ -284,8 +445,8 @@
 	var svg = d3.select("#visualisation_1")
 				.append("svg")
 				.attr("id", "viz1")
-				.attr("width", SVG_WIDTH)
-				.attr("height", SVG_HEIGHT);
+				.attr("width", VIZ1_SVG_WIDTH)
+				.attr("height", VIZ1_SVG_HEIGHT);
 
 	// Define the div for the tooltip
 	var div = d3.select("#visualisation_1").append("div")	
@@ -298,9 +459,17 @@
 	d3.csv("/static/data/PreprocessedDataset2.csv", function(data){
 		// console.log(error);
 		// console.log(data);
+		data.forEach(function(d){
+			viz1_dataset1.push(d);
+		});
 
 		d3.csv("/static/data/PreprocessedDataset3.csv", function(data2){
-			
+			viz1_dataset1 = data;
+			viz1_dataset2 = data2;
+			data2.forEach(function(d){
+				viz1_dataset2.push(d);
+			});
+
 			var _DriversOptions = [];
 			var _CircuitsOptions = [];
 			// YearsArray = [];
@@ -384,7 +553,7 @@
 								.attr("width", length((parseInt(d.FirstLapChangeMax) - parseInt(d2.FirstLapChangeMin))))
 								.attr("height", OUTERBAR_WIDTH)
 								.attr("fill", function(){
-									return color("outer_bar");})
+									return VIZ1_color("outer_bar");})
 								// .on("mouseover", handleMouseOver)
 								// .on("mouseout", handleMouseOut)
 							// Display First Quartile
@@ -395,7 +564,7 @@
 								.attr("width", 2)
 								.attr("height", OUTERBAR_WIDTH + 6)
 								.attr("fill", function(){
-									return color("stroke");})
+									return VIZ1_color("quartile");})
 
 								// Display Second Quartile / Median
 							g.append("rect")
@@ -405,7 +574,7 @@
 								.attr("width", 4)
 								.attr("height", OUTERBAR_WIDTH + 6)
 								.attr("fill", function(){
-									return color("stroke");})
+									return VIZ1_color("median");})
 								//Display Third Quartile
 							g.append("rect")
 								.attr("transform",function(){
@@ -414,7 +583,7 @@
 								.attr("width", 2)
 								.attr("height", OUTERBAR_WIDTH + 6)
 								.attr("fill", function(){
-									return color("stroke");})
+									return VIZ1_color("quartile");})
 						}
 
 					}
@@ -426,7 +595,7 @@
 						.attr("width", length((parseInt(d.FirstLapChangeMax) - parseInt(d.FirstLapChangeMin))))
 						.attr("height", INNERBAR_WIDTH)
 						.attr("fill", function(){
-							return color("inner_bar");})
+							return VIZ1_color("inner_bar");})
 						// .on("mouseover", handleMouseOver)
 						// .on("mouseout", handleMouseOut)
 					// Display First Quartile
@@ -437,7 +606,7 @@
 						.attr("width", 2)
 						.attr("height", INNERBAR_WIDTH + 6)
 						.attr("fill", function(){
-							return color("stroke");})
+							return VIZ1_color("quartile");})
 
 						// Display Second Quartile / Median
 					g.append("rect")
@@ -447,7 +616,7 @@
 						.attr("width", 4)
 						.attr("height", INNERBAR_WIDTH + 6)
 						.attr("fill", function(){
-							return color("stroke");})
+							return VIZ1_color("median");})
 						//Display Third Quartile
 					g.append("rect")
 						.attr("transform",function(){
@@ -456,7 +625,7 @@
 						.attr("width", 2)
 						.attr("height", INNERBAR_WIDTH + 6)
 						.attr("fill", function(){
-							return color("stroke");})
+							return VIZ1_color("quartile");})
 					// Display x Axis
 					gXAxis = svg.append("g")
 					    .attr("class", "x axis")
@@ -468,7 +637,7 @@
 
 					g.append("text")
 					    .attr("transform", "translate(" + 0 + "," + (i+1)*BAR_GAP + ")" )
-				        .attr("x", 0)
+				        .attr("x", 10)
 				        .attr("y", -INNERBAR_OFFSET)
 				        .text(d.DriverName);
 
@@ -484,7 +653,7 @@
 					// 			.attr("width", width)
 					// 			.attr("height", BAR_WIDTH)
 					// 			.attr("fill", function(){
-					// 				return color("inner_bar");})
+					// 				return VIZ1_color("inner_bar");})
 					// 			.on("mouseover", handleMouseOver)
 					// 			.on("mouseout", handleMouseOut)
 					//     	}
@@ -524,23 +693,20 @@
 							FilteredData = getFilteredData_Drivers(data, DriverIDArray);
 							FilteredData2 = getFilteredData_Circuit_Drivers(data2, CircuitID, DriverIDArray);
 							console.log(DriverIDArray);
-							// console.log(FilteredData2)
-							// console.log(FilteredData2.length)
 							enterBars(FilteredData, FilteredData2);
 				        }else{
 				        	if(temp_count < 1){
 						        $(this).removeClass('unclicked');
 				        		$(this).addClass('clicked');
 					        	NumberOfCircuitsSelected += 1;
-					        	// console.log(this.textContent);
 					        	CircuitID = String(this.id.split("_")[1]);
 					        	console.log(CircuitID);
 					        	d3.select("#viz1").selectAll("g").remove();
+						  		d3.select("#viz2").selectAll("g").remove();
 							  	FilteredData = getFilteredData_Drivers(data, DriverIDArray);
 								FilteredData2 = getFilteredData_Circuit_Drivers(data2, CircuitID, DriverIDArray);
-								// console.log(FilteredData2)
-								// console.log(FilteredData2.length)
 								enterBars(FilteredData, FilteredData2);
+								enterArcs(viz2_dataset1);
 							}
 				        }
 			    	}
@@ -574,6 +740,7 @@
 			        }else{
 				        NumberOfCircuitsSelected -= 1;
 				        d3.select("#viz1").selectAll("g").remove();
+						d3.select("#viz2").selectAll("g").remove();
 				        CircuitID = "";
 						FilteredData = getFilteredData_Drivers(data, DriverIDArray);
 						FilteredData2 = getFilteredData_Circuit_Drivers(data2, CircuitID, DriverIDArray);
@@ -597,7 +764,7 @@
 	            .style("left", (d3.event.pageX + 10) + "px")		
 	            .style("top", (d3.event.pageY - 28) + "px");	
 	        
-		      // Use D3 to select element, change color and size
+		      // Use D3 to select element, change VIZ1_color and size
 	  	      d3.select(this).attr(
 		      	{height: BAR_GAP*0.8}
 		      	);
@@ -609,7 +776,7 @@
 			div.transition()		
 	                .duration(500)		
 	                .style("opacity", 0);	
-		      // Use D3 to select element, change color back to normal
+		      // Use D3 to select element, change VIZ1_color back to normal
 		      d3.select(this).attr(
 		      	{height: BAR_GAP*0.6}
 		      	);
@@ -618,7 +785,174 @@
 		});
 	});
 
-	</script>
+	
+	// Visualisation_2
+
+	// const VIZ2_SVG_WIDTH = 500;
+	// const VIZ2_SVG_HEIGHT = 500;
+	// // const BAR_GAP = VIZ2_SVG_WIDTH/22;
+	// // const BAR_WIDTH = BAR_GAP * 0.6;
+	// const INNER_RADIUS = 125;
+	// const OUTER_RADIUS = VIZ2_SVG_WIDTH/2.0 * 0.8;
+
+	var VIZ2_colorMin = 1;
+
+	var VIZ2_colorMax = 8;
+
+	var angleMin_domain = 0;
+
+	var angleMax_domain = 1000;
+
+	// var lengthMin = 0;
+
+	// var lengthMax = 1000;
+
+	var margin ={top: 20, right: 20, bottom: 20, left: 20},
+		width = VIZ2_SVG_WIDTH - margin.left - margin.right,
+		height = VIZ2_SVG_HEIGHT - margin.top - margin.bottom;
+
+	// var length = d3.scale.linear()
+	// 				.range([0, width]);
+
+	var angle = d3.scale.linear()
+					.range([0, 2*Math.PI])
+					.domain([angleMin_domain, angleMax_domain]);
+
+	// var invertLength = d3.scale.linear()
+	// 				.range([lengthMin, lengthMax]).domain([0, width]);
+
+	// console.log(invertLength(4));
+
+	// var VIZ2_color = d3.scale.linear()
+	//       			// .interpolate(d3.interpolateHcl)
+ //      				.range([d3.rgb("#99000D"), d3.rgb('#fff5f0')]);
+	// 				// .range(["red", "green"]);
+	// VIZ2_color.domain([VIZ2_colorMin, VIZ2_colorMax]);
+
+	function VIZ2_color(value){
+		switch(value){
+			case 1: return "#99000D"; break;
+			case 2: return "#CB181D"; break;
+			case 3: return "#EF3B2C"; break;
+			case 4: return "#FB6A4A"; break;
+			case 5: return "#FC9272"; break;
+			case 6: return "#FCBBA1"; break;
+			case 7: return "#FEE0D2"; break;
+			case 8: return "#fff5f0"; break;
+		}
+	}
+
+	// length.domain([lengthMin, lengthMax]);
+
+	var svg2 = d3.select("#visualisation_2")
+				.append("svg")
+				.attr("id","viz2")
+				.attr("width", width + margin.left + margin.right)
+				.attr("height", height + margin.top + margin.bottom);
+
+	// Define the div for the tooltip
+	var div = d3.select("#visualisation_2").append("div")	
+	    .attr("class", "tooltip")				
+	    .style("opacity", 0)
+	    .style("font", "10px times");
+
+	// var $BarcodeContainerSelector = querySelector("barcodeContainer");
+
+	function enterArcs(data){
+		var i1 = -1;
+		var i2 = -1;
+		for(var i = 0; i < data.length; i++){
+			console.log(data[i]);
+			if(data[i].circuitId === CircuitID){
+				g = svg2.append("g").attr("id", "viz2_" + String(i));
+				var d = data[i];
+				var xAngle = 0.0;
+				// var d = data[i];
+				for (var property in data[i]) {
+				    if (data[i].hasOwnProperty(property)) {
+				    	if(String(property).includes("Pattern_")){
+				    		// console.log(String(d[property]));
+				    		if(d[property] == ""){
+				    			continue;
+				    		}
+				    		// console.log(parseFloat((d[property].split("_"))[1].replace("%",""))*10.0);
+			    			var arc = d3.svg.arc()
+							    .innerRadius(INNER_RADIUS)
+							    .outerRadius(OUTER_RADIUS)
+							    .startAngle(xAngle) //converting from degs to radians
+							    .endAngle(angle(parseFloat((d[property].split("_"))[1].replace("%",""))*10.0) + xAngle) //just radians
+
+							xAngle += angle(parseFloat((d[property].split("_"))[1].replace("%",""))*10.0);
+
+							g.append("path")
+							.attr("id", "arc_" + String(property).split("_")[1])
+							.attr("transform",function(){
+								return "translate(" + [VIZ2_SVG_WIDTH/2, VIZ2_SVG_HEIGHT/2] + ")";
+							})
+							.attr("d", arc)
+							// .attr("width", function(){
+							// 	if(d[property] === ""){
+							// 		return 0;
+							// 	}
+							// 	xMove += length(parseFloat((d[property].split("_"))[1].replace("%",""))*10.0);
+							// 	return length(parseFloat((d[property].split("_"))[1].replace("%",""))*10.0);})
+							// .attr("height", BAR_WIDTH)
+							.attr("fill", function(){
+								if(d[property] === ""){
+									return VIZ2_color(1);
+								}
+								// console.log(VIZ2_color(parseInt(d[property].split("_")[0])));
+								return VIZ2_color(parseInt(d[property].split("_")[0]));})
+							.on("mouseover", handleMouseOver2)
+							.on("mouseout", handleMouseOut2)
+							g.append("text")
+							.text("Turn Difficulty: " + String(8 - parseInt(d[property].split("_")[0])))
+							.attr("id", "textbox_arc_" + String(property).split("_")[1])
+							.style("font", "12px times")
+							.style("opacity", 0)
+							.attr("x", function(d){return VIZ2_SVG_WIDTH/2.0;})
+							.attr("y", function(d){return VIZ2_SVG_HEIGHT/2.0;})
+							.attr("text-anchor", "middle")
+							g.append("text")
+							.text("Length of Road: " + (d[property].split("_"))[1] )
+							.attr("id", "textbox_arc_" + String(property).split("_")[1])
+							.style("font", "12px times")
+							.style("opacity", 0)
+							.attr("x", function(d){return VIZ2_SVG_WIDTH/2.0;})
+							.attr("y", function(d){return VIZ2_SVG_HEIGHT/2.0 + 20;})
+							.attr("text-anchor", "middle")
+							// .style("fill", "#FFFFFF")
+				    	}
+				    }
+				}
+
+			}
+			
+		}
+
+	}
+
+	// Create Event Handlers for mouse
+	function handleMouseOver2(d, i) {  // Add interactivity
+		console.log(this.id);
+		textbox = d3.selectAll(("#textbox_" + this.id)).style("opacity", .9);
+	    }
+
+	function handleMouseOut2(d, i){
+		textbox = d3.selectAll(("#textbox_" + this.id)).style("opacity", 0);
+	    }
+	d3.csv("/static/data/track_data_final.csv", function(data){
+		data.forEach(function(d){
+			viz2_dataset1.push(d);
+		});
+
+		enterArcs(data);
+		console.log(viz2_dataset1);
+
+	});
+
+
+</script>
 
 
 

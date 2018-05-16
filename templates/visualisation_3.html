@@ -33,7 +33,7 @@ div.tooltip {
 		<th>
 	</table>
 
-	<div id = "Visualisation_Table"> 
+<!-- 	<div id = "Visualisation_Table"> 
 		<div draggable = "true" id = "barcode_1" alt="barcode_1" class = "barcodeContainer"> barcode_1 </div>
 		<div id = "barcode_2" alt="barcode_2" class = "barcodeContainer"> barcode_2 </div>
 		<div id = "barcode_3" alt="barcode_3" class = "barcodeContainer"> barcode_3 </div>
@@ -47,7 +47,7 @@ div.tooltip {
 		<div id = "barcode_11" alt="barcode_11" class = "barcodeContainer"> barcode_11 </div>
 		<div id = "barcode_12" alt="barcode_12" class = "barcodeContainer"> barcode_12 </div>
 
-	</div>
+	</div> -->
 
 
 
@@ -84,37 +84,48 @@ div.tooltip {
 			});
 	}
 
-	const SVG_WIDTH = 500;
-	const SVG_HEIGHT = 500;
-	const BAR_GAP = SVG_WIDTH/22;
+	const VIZ2_SVG_WIDTH = 500;
+	const VIZ2_SVG_HEIGHT = 500;
+	const BAR_GAP = VIZ2_SVG_WIDTH/22;
 	const BAR_WIDTH = BAR_GAP * 0.6;
-	var colorMin = 1;
+	const INNER_RADIUS = 125;
+	const OUTER_RADIUS = VIZ2_SVG_WIDTH/2.0 * 0.8;
 
-	var colorMax = 8;
+	var VIZ2_colorMin = 1;
 
-	var lengthMin = 0;
+	var VIZ2_colorMax = 8;
 
-	var lengthMax = 1000;
+	var angleMin_domain = 0;
+
+	var angleMax_domain = 1000;
+
+	// var lengthMin = 0;
+
+	// var lengthMax = 1000;
 
 	var margin ={top: 20, right: 20, bottom: 20, left: 20},
-		width = SVG_WIDTH - margin.left - margin.right,
-		height = SVG_HEIGHT - margin.top - margin.bottom;
+		width = VIZ2_SVG_WIDTH - margin.left - margin.right,
+		height = VIZ2_SVG_HEIGHT - margin.top - margin.bottom;
 
-	var length = d3.scale.linear()
-					.range([0, width]);
+	// var length = d3.scale.linear()
+	// 				.range([0, width]);
 
-	var invertLength = d3.scale.linear()
-					.range([lengthMin, lengthMax]).domain([0, width]);
+	var angle = d3.scale.linear()
+					.range([0, 2*Math.PI])
+					.domain([angleMin_domain, angleMax_domain]);
+
+	// var invertLength = d3.scale.linear()
+	// 				.range([lengthMin, lengthMax]).domain([0, width]);
 
 	// console.log(invertLength(4));
 
-	// var color = d3.scale.linear()
+	// var VIZ2_color = d3.scale.linear()
 	//       			// .interpolate(d3.interpolateHcl)
  //      				.range([d3.rgb("#99000D"), d3.rgb('#fff5f0')]);
 	// 				// .range(["red", "green"]);
-	// color.domain([colorMin, colorMax]);
+	// VIZ2_color.domain([VIZ2_colorMin, VIZ2_colorMax]);
 
-	function color(value){
+	function VIZ2_color(value){
 		switch(value){
 			case 1: return "#99000D"; break;
 			case 2: return "#CB181D"; break;
@@ -127,7 +138,7 @@ div.tooltip {
 		}
 	}
 
-	length.domain([lengthMin, lengthMax]);
+	// length.domain([lengthMin, lengthMax]);
 
 	var svg = d3.select("body")
 				.append("svg")
@@ -158,72 +169,158 @@ div.tooltip {
 			}
 		});
 
-		function enterBars(data){
+		function arcTween(outerRadius, delay) {
+		  return function() {
+		    d3.select(this).transition().delay(delay).attrTween("d", function(d) {
+		      var i = d3.interpolate(d.outerRadius, outerRadius);
+		      return function(t) { d.outerRadius = i(t); return arc(d); };
+		    });
+		  };
+		}
+
+
+		function enterArcs(data){
 			var i1 = -1;
 			var i2 = -1;
-			for(var i = 0; i < data.length; i++){
+			for(var i = 0; i < data.length - data.length + 1; i++){
 				g = svg.append("g").attr("id", String(i));
 				var d = data[i];
-				var xMove = 0.0;
-				var d = data[i];
+				var xAngle = 0.0;
+				// var d = data[i];
 				for (var property in data[i]) {
 				    if (data[i].hasOwnProperty(property)) {
 				    	if(String(property).includes("Pattern_")){
-				    		// console.log(String(data[i][property]));
+				    		// console.log(String(d[property]));
+				    		if(d[property] == ""){
+				    			continue;
+				    		}
+				    		// console.log(parseFloat((d[property].split("_"))[1].replace("%",""))*10.0);
+			    			var arc = d3.svg.arc()
+							    .innerRadius(INNER_RADIUS)
+							    .outerRadius(OUTER_RADIUS)
+							    .startAngle(xAngle) //converting from degs to radians
+							    .endAngle(angle(parseFloat((d[property].split("_"))[1].replace("%",""))*10.0) + xAngle) //just radians
 
-							g.append("rect")
+							xAngle += angle(parseFloat((d[property].split("_"))[1].replace("%",""))*10.0);
+
+							g.append("path")
+							.attr("id", "arc_" + String(property).split("_")[1])
 							.attr("transform",function(){
-								return "translate(" + [xMove, i*BAR_GAP] + ")";
+								return "translate(" + [VIZ2_SVG_WIDTH/2, VIZ2_SVG_HEIGHT/2] + ")";
 							})
-							.attr("width", function(){
-								if(d[property] === ""){
-									return 0;
-								}
-								xMove += length(parseFloat((d[property].split("_"))[1].replace("%",""))*10.0);
-								return length(parseFloat((d[property].split("_"))[1].replace("%",""))*10.0);})
-							.attr("height", BAR_WIDTH)
+							.attr("d", arc)
+							// .attr("width", function(){
+							// 	if(d[property] === ""){
+							// 		return 0;
+							// 	}
+							// 	xMove += length(parseFloat((d[property].split("_"))[1].replace("%",""))*10.0);
+							// 	return length(parseFloat((d[property].split("_"))[1].replace("%",""))*10.0);})
+							// .attr("height", BAR_WIDTH)
 							.attr("fill", function(){
 								if(d[property] === ""){
-									return color(1);
+									return VIZ2_color(1);
 								}
-								return color(parseInt(d[property].split("_")[0]));})
+								// console.log(VIZ2_color(parseInt(d[property].split("_")[0])));
+								return VIZ2_color(parseInt(d[property].split("_")[0]));})
 							.on("mouseover", handleMouseOver)
 							.on("mouseout", handleMouseOut)
+							g.append("text")
+							.text("Turn Difficulty: " + String(parseInt(d[property].split("_")[0])))
+							.attr("id", "textbox_arc_" + String(property).split("_")[1])
+							.style("font", "12px times")
+							.style("opacity", 0)
+							.attr("x", function(d){return VIZ2_SVG_WIDTH/2.0;})
+							.attr("y", function(d){return VIZ2_SVG_HEIGHT/2.0;})
+							.attr("text-anchor", "middle")
+							g.append("text")
+							.text("Length of Road (Percentage): " + (d[property].split("_"))[1].replace("%","") )
+							.attr("id", "textbox_arc_" + String(property).split("_")[1])
+							.style("font", "12px times")
+							.style("opacity", 0)
+							.attr("x", function(d){return VIZ2_SVG_WIDTH/2.0;})
+							.attr("y", function(d){return VIZ2_SVG_HEIGHT/2.0 + 20;})
+							.attr("text-anchor", "middle")
+							// .style("fill", "#FFFFFF")
 				    	}
 				    }
 				}
 			}
+
+
 		}
 
+		// function enterBars(data){
+		// 	var i1 = -1;
+		// 	var i2 = -1;
+		// 	for(var i = 0; i < data.length; i++){
+		// 		g = svg.append("g").attr("id", String(i));
+		// 		var d = data[i];
+		// 		var xMove = 0.0;
+		// 		var d = data[i];
+		// 		for (var property in data[i]) {
+		// 		    if (data[i].hasOwnProperty(property)) {
+		// 		    	if(String(property).includes("Pattern_")){
+		// 		    		// console.log(String(data[i][property]));
 
-		  enterBars(data);
+
+		// 					g.append("rect")
+		// 					.attr("transform",function(){
+		// 						return "translate(" + [xMove, i*BAR_GAP] + ")";
+		// 					})
+		// 					.attr("width", function(){
+		// 						if(d[property] === ""){
+		// 							return 0;
+		// 						}
+		// 						xMove += length(parseFloat((d[property].split("_"))[1].replace("%",""))*10.0);
+		// 						return length(parseFloat((d[property].split("_"))[1].replace("%",""))*10.0);})
+		// 					.attr("height", BAR_WIDTH)
+		// 					.attr("fill", function(){
+		// 						if(d[property] === ""){
+		// 							return VIZ2_color(1);
+		// 						}
+		// 						return VIZ2_color(parseInt(d[property].split("_")[0]));})
+		// 					.on("mouseover", handleMouseOver)
+		// 					.on("mouseout", handleMouseOut)
+		// 		    	}
+		// 		    }
+		// 		}
+		// 	}
+		// }
+
+
+		//   enterBars(data);
+		  enterArcs(data);
 
 	// Create Event Handlers for mouse
 	function handleMouseOver(d, i) {  // Add interactivity
-		div.transition()		
-            .duration(200)		
-            .style("opacity", .9);		
-        div	.style("width", 60)
-        	.style("height", 70).html("Length: " + String(invertLength(this.width.baseVal.value)))
-            .style("left", (d3.event.pageX + 10) + "px")		
-            .style("top", (d3.event.pageY - 28) + "px");	
+		console.log(this.id);
+		textbox = d3.selectAll(("#textbox_" + this.id)).style("opacity", .9);
+		// div.transition()		
+  //           .duration(200)		
+  //           .style("opacity", .9);		
+        // div	.style("width", 60)
+        // 	.style("height", 70).html("Length: " + String(invertLength(this.width.baseVal.value)))
+        //     .style("left", (d3.event.pageX + 10) + "px")		
+        //     .style("top", (d3.event.pageY - 28) + "px");	
         
-	      // Use D3 to select element, change color and size
-  	      d3.select(this).attr(
-	      	{height: BAR_GAP*0.8}
-	      	);
-  	      console.log(this);
+	      // Use D3 to select element, change VIZ2_color and size
+  	      // d3.select(this).attr("stroke-width", "100px");
+	      	// {stroke-width: "10px"}
+	      	// );
+			// console.log(d);
+  	      // console.log(d3.select(this).attr("d"));
 	    }
 
 	function handleMouseOut(d, i){
-
-		div.transition()		
-                .duration(500)		
-                .style("opacity", 0);	
-	      // Use D3 to select element, change color back to normal
-	      d3.select(this).attr(
-	      	{height: BAR_GAP*0.6}
-	      	);
+		textbox = d3.selectAll(("#textbox_" + this.id)).style("opacity", 0);
+		// div.transition()		
+  //               .duration(500)		
+  //               .style("opacity", 0);	
+	 //      // Use D3 to select element, change VIZ2_color back to normal
+	 //      console.log(d3.select(this).attr("d"))
+	      // d3.select(this).attr(
+	      // 	{outerRadius: OUTER_RADIUS}
+	      // 	);
 	    }
 	});
 
