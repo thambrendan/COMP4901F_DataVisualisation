@@ -1,9 +1,15 @@
 from flask import Flask, render_template
+import os
+
+IMAGE_FOLDER = os.path.join('static', 'image')
+
 app = Flask(__name__)
+app.config['UPLOAD_FOLDER'] = IMAGE_FOLDER
  
 @app.route("/")
 def overview_home():
-    return render_template('temp_visualisation.html')
+    imagename = os.path.join(app.config['UPLOAD_FOLDER'], 'paul-smith-193761-unsplash.jpg')
+    return render_template('temp_visualisation.html', user_image = imagename)
 
 @app.route("/visualisation_1")
 def visualisation_1():
