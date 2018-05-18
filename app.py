@@ -15,6 +15,13 @@ def overview_home():
 def visualisation_1():
     return render_template('visualisation_1.html')
 
+## testing
+
+@app.route("/paracoords")
+def paracoords_viz():
+    return render_template('paracoords.html')
+
+
 @app.route("/visualisation_3")
 def visualisation_3():
     return render_template('visualisation_3.html')
